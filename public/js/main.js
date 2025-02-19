@@ -85,6 +85,7 @@ async function fetchLatestManga() {
     }
 }
 
+// Update this line in main.js
 async function fetchMangaCovers(manga) {
     if (!manga.relationships) return null;
     
@@ -94,8 +95,8 @@ async function fetchMangaCovers(manga) {
     const fileName = coverRelationship.attributes?.fileName;
     if (!fileName) return null;
 
-    // Ubah URL untuk menggunakan proxy server kita
-    return `http://localhost:3000/api/cover/${manga.id}/${fileName}`;
+    // Update URL to use relative path
+    return `/api/cover/${manga.id}/${fileName}`;
 }
 
 // Di main.js, modifikasi fungsi displayManga
