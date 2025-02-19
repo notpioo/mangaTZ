@@ -100,6 +100,7 @@ async function fetchMangaCovers(manga) {
 }
 
 // Di main.js, modifikasi fungsi displayManga
+// Di main.js, update fungsi displayManga
 async function displayManga(mangaList, containerId) {
     if (!mangaList || mangaList.length === 0) return;
 
@@ -140,14 +141,12 @@ async function displayManga(mangaList, containerId) {
                        'Unknown Title';
             }
             
-            // Get cover URL
+            // Get cover URL menggunakan route proxy baru
             let coverUrl = placeholderImage;
             if (manga.relationships) {
                 const coverArt = manga.relationships.find(rel => rel.type === 'cover_art');
                 if (coverArt && coverArt.attributes && coverArt.attributes.fileName) {
-                    coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/${coverArt.attributes.fileName}`;
-                } else {
-                    coverUrl = `https://uploads.mangadex.org/covers/${manga.id}/cover.jpg`;
+                    coverUrl = `/api/manga/cover/${manga.id}/${coverArt.attributes.fileName}`;
                 }
             }
             
@@ -164,19 +163,11 @@ async function displayManga(mangaList, containerId) {
                     <h3 class="manga-title">${title}</h3>
                     <div class="manga-details">
                         <span class="manga-rating">
-                            <i class="fas fa-star"></i> ${manga.rating || (Math.random() * 5).toFixed(1)}
+                            <i class="fas fa-star"></i> ${(Math.random() * 2 + 3).toFixed(1)}
                         </span>
                     </div>
                 </div>
             `;
-            
-            // Handle image loading errors
-            const img = card.querySelector('img');
-            img.addEventListener('error', function() {
-                if (this.src !== placeholderImage) {
-                    this.src = placeholderImage;
-                }
-            });
             
             mangaGrid.appendChild(card);
         } catch (error) {

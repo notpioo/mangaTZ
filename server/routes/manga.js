@@ -1,9 +1,9 @@
+// Di routes/manga.js, tambahkan route untuk proxy cover
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-// Get popular manga
-// Di routes/manga.js
+// Route yang sudah ada untuk popular manga
 router.get('/popular', async (req, res) => {
     try {
         const response = await axios.get('https://api.mangadex.org/manga', {
@@ -15,16 +15,6 @@ router.get('/popular', async (req, res) => {
                 'availableTranslatedLanguage[]': ['en', 'ja']
             }
         });
-
-        // Log untuk debugging
-        console.log('Manga data received:', 
-            response.data.data.map(manga => ({
-                id: manga.id,
-                title: manga.attributes?.title,
-                hasCover: manga.relationships?.some(rel => rel.type === 'cover_art')
-            }))
-        );
-
         res.json(response.data);
     } catch (error) {
         console.error('Error fetching popular manga:', error.response?.data || error.message);
@@ -32,7 +22,7 @@ router.get('/popular', async (req, res) => {
     }
 });
 
-// Get latest manga
+// Route yang sudah ada untuk latest manga
 router.get('/latest', async (req, res) => {
     try {
         const response = await axios.get('https://api.mangadex.org/manga', {
@@ -47,6 +37,27 @@ router.get('/latest', async (req, res) => {
     } catch (error) {
         console.error('Error fetching latest manga:', error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to fetch latest manga' });
+    }
+});
+
+// Tambahkan route baru untuk proxy cover
+router.get('/cover/:mangaId/:fileName', async (req, res) => {
+    try {
+        const { mangaId, fileName } = req.params;
+        const coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
+        
+        const response = await axios.get(coverUrl, {
+            responseType: 'stream'
+        });
+        
+        // Set header Content-Type sesuai dengan response
+        res.set('Content-Type', response.headers['content-type']);
+        
+        // Pipe response stream ke client
+        response.data.pipe(res);
+    } catch (error) {
+        console.error('Error fetching cover:', error.message);
+        res.status(500).json({ error: 'Failed to fetch cover' });
     }
 });
 
