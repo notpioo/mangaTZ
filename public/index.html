@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MangaTZ - Your Manga Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <div class="wrapper">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <div class="brand-logo">MT</div>
+                <div class="brand-name">MangaTZ</div>
                 <span class="close-btn" id="closeSidebar">&times;</span>
             </div>
             <nav class="sidebar-nav">
-                <a href="/" class="nav-item"><i class="fas fa-home"></i> Home</a>
+                <a href="/" class="nav-item active"><i class="fas fa-home"></i> Home</a>
                 <a href="/latest" class="nav-item"><i class="fas fa-clock"></i> Latest</a>
                 <a href="/popular" class="nav-item"><i class="fas fa-fire"></i> Popular</a>
                 <a href="/genres" class="nav-item"><i class="fas fa-tags"></i> Genres</a>
@@ -44,49 +47,35 @@
 
             <!-- Content -->
             <div class="container">
-                <!-- Add this after the navbar and before the manga sections -->
-<div class="banner-slider">
-    <div class="banner-slide active">
-        <img src="/api/placeholder/1200/300" alt="Featured Manga 1" class="banner-image">
-        <div class="banner-info">
-            <h2 class="banner-title">Featured Manga 1</h2>
-            <p class="banner-description">Check out this amazing manga series!</p>
-        </div>
-    </div>
-    <div class="banner-slide">
-        <img src="/api/placeholder/1200/300" alt="Featured Manga 2" class="banner-image">
-        <div class="banner-info">
-            <h2 class="banner-title">Featured Manga 2</h2>
-            <p class="banner-description">Another great series you'll love!</p>
-        </div>
-    </div>
-    <div class="banner-slide">
-        <img src="/api/placeholder/1200/300" alt="Featured Manga 3" class="banner-image">
-        <div class="banner-info">
-            <h2 class="banner-title">Featured Manga 3</h2>
-            <p class="banner-description">Don't miss out on this one!</p>
-        </div>
-    </div>
-    <div class="banner-nav">
-        <div class="banner-dot active"></div>
-        <div class="banner-dot"></div>
-        <div class="banner-dot"></div>
-    </div>
-</div>
+                <div class="banner-slider">
+                    <div class="banner-slide active">
+                        <img src="/api/placeholder/1200/300" alt="Featured Manga 1" class="banner-image">
+                        <div class="banner-info">
+                            <h2 class="banner-title">Featured Manga 1</h2>
+                            <p class="banner-description">Check out this amazing manga series!</p>
+                        </div>
+                    </div>
+                    <!-- Other banner slides... -->
+                </div>
+
                 <section class="manga-section">
                     <div class="section-header">
                         <h2>Popular Manga</h2>
                         <a href="/popular" class="view-all">View All</a>
                     </div>
-                    <div id="popular-manga"></div>
+                    <div id="popular-manga" class="manga-grid-container">
+                        <!-- Manga cards will be inserted here by JavaScript -->
+                    </div>
                 </section>
-            
+
                 <section class="manga-section">
                     <div class="section-header">
                         <h2>Latest Updates</h2>
                         <a href="/latest" class="view-all">View All</a>
                     </div>
-                    <div id="latest-manga"></div>
+                    <div id="latest-manga" class="manga-grid-container">
+                        <!-- Manga cards will be inserted here by JavaScript -->
+                    </div>
                 </section>
             </div>
         </main>
