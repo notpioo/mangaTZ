@@ -1,47 +1,55 @@
-import { auth, db } from './config/firebase.js';
 import { 
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signInWithPopup,
     GoogleAuthProvider,
+    signInAnonymously,
     signOut,
     sendPasswordResetEmail
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-
-document.getElementById('loginButton').addEventListener('click', showAuthModal);
-
-const auth = getAuth();
-const db = getFirestore();
-const googleProvider = new GoogleAuthProvider();
+import { auth, db } from './config/firebase.js';
 
 // DOM Elements
 const authModal = document.getElementById('authModal');
+const openAuthModalBtn = document.getElementById('openAuthModal');
+const closeAuthModalBtn = document.getElementById('closeAuthModal');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const authTabs = document.querySelectorAll('.auth-tab');
 const googleAuthBtn = document.querySelector('.google-auth-button');
+const anonymousAuthBtn = document.querySelector('.anonymous-auth-button');
 const forgotPasswordLink = document.getElementById('forgotPassword');
 
-// Show/Hide Auth Modal
-export function showAuthModal() {
+// Show/Hide Modal
+function showAuthModal() {
     authModal.classList.add('active');
 }
 
-export function hideAuthModal() {
+function hideAuthModal() {
     authModal.classList.remove('active');
+    // Reset forms
+    loginForm.reset();
+    registerForm.reset();
 }
+
+// Event Listeners
+openAuthModalBtn.addEventListener('click', showAuthModal);
+closeAuthModalBtn.addEventListener('click', hideAuthModal);
+
+// Close modal when clicking outside
+window.addEventListener('click', (e) => {
+    if (e.target === authModal) hideAuthModal();
+});
 
 // Tab Switching
 authTabs.forEach(tab => {
     tab.addEventListener('click', () => {
         const targetTab = tab.dataset.tab;
         
-        // Update active tab
         authTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         
-        // Show corresponding form
         document.querySelectorAll('.auth-form').forEach(form => {
             form.classList.remove('active');
         });
@@ -49,7 +57,7 @@ authTabs.forEach(tab => {
     });
 });
 
-// Login Form Submit
+// Login Form Handler
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -57,16 +65,15 @@ loginForm.addEventListener('submit', async (e) => {
     const password = document.getElementById('loginPassword').value;
     
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
         hideAuthModal();
-        // Additional success handling
+        showToast('Successfully logged in!');
     } catch (error) {
-        console.error('Login error:', error);
-        // Show error to user
+        showToast(error.message, 'error');
     }
 });
 
-// Register Form Submit
+// Register Form Handler
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -76,14 +83,14 @@ registerForm.addEventListener('submit', async (e) => {
     const confirmPassword = document.getElementById('confirmPassword').value;
     
     if (password !== confirmPassword) {
-        alert('Passwords do not match');
+        showToast('Passwords do not match', 'error');
         return;
     }
     
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         
-        // Create user document in Firestore
+        // Create user document
         await setDoc(doc(db, 'users', userCredential.user.uid), {
             username,
             email,
@@ -93,17 +100,17 @@ registerForm.addEventListener('submit', async (e) => {
         });
         
         hideAuthModal();
-        // Additional success handling
+        showToast('Account created successfully!');
     } catch (error) {
-        console.error('Registration error:', error);
-        // Show error to user
+        showToast(error.message, 'error');
     }
 });
 
 // Google Sign In
 googleAuthBtn.addEventListener('click', async () => {
+    const provider = new GoogleAuthProvider();
     try {
-        const result = await signInWithPopup(auth, googleProvider);
+        const result = await signInWithPopup(auth, provider);
         
         // Check if new user
         if (result._tokenResponse.isNewUser) {
@@ -117,9 +124,28 @@ googleAuthBtn.addEventListener('click', async () => {
         }
         
         hideAuthModal();
+        showToast('Successfully logged in with Google!');
     } catch (error) {
-        console.error('Google sign in error:', error);
-        // Show error to user
+        showToast(error.message, 'error');
+    }
+});
+
+// Anonymous Sign In
+anonymousAuthBtn.addEventListener('click', async () => {
+    try {
+        const result = await signInAnonymously(auth);
+        
+        await setDoc(doc(db, 'users', result.user.uid), {
+            username: 'Anonymous User',
+            createdAt: serverTimestamp(),
+            history: [],
+            bookmarks: []
+        });
+        
+        hideAuthModal();
+        showToast('Logged in anonymously!');
+    } catch (error) {
+        showToast(error.message, 'error');
     }
 });
 
@@ -129,28 +155,41 @@ forgotPasswordLink.addEventListener('click', async (e) => {
     const email = document.getElementById('loginEmail').value;
     
     if (!email) {
-        alert('Please enter your email address');
+        showToast('Please enter your email address', 'error');
         return;
     }
     
     try {
         await sendPasswordResetEmail(auth, email);
-        alert('Password reset email sent!');
+        showToast('Password reset email sent!');
     } catch (error) {
-        console.error('Password reset error:', error);
-        // Show error to user
+        showToast(error.message, 'error');
     }
 });
 
+// Toast notification function
+function showToast(message, type = 'success') {
+    // You can implement your own toast notification system here
+    alert(message); // Temporary simple alert, replace with proper toast
+}
+
 // Auth State Observer
 auth.onAuthStateChanged((user) => {
+    const authButton = document.getElementById('openAuthModal');
+    
     if (user) {
-        // User is signed in
+        // Update button for logged in state
+        authButton.innerHTML = `
+            <i class="fas fa-user"></i>
+            <span>${user.displayName || 'Profile'}</span>
+        `;
         document.body.classList.add('user-logged-in');
-        // Update UI for logged in state
     } else {
-        // User is signed out
+        // Reset button to default state
+        authButton.innerHTML = `
+            <i class="fas fa-user"></i>
+            <span>Login</span>
+        `;
         document.body.classList.remove('user-logged-in');
-        // Update UI for logged out state
     }
 });
