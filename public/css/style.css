@@ -154,6 +154,12 @@ body {
     gap: 1rem;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .menu-btn {
     background: none;
     border: none;
@@ -472,6 +478,30 @@ body {
     animation: loading 1.5s infinite;
 }
 
+.auth-icon-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.auth-icon-button:hover {
+    background: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.auth-icon-button i {
+    font-size: 1.1rem;
+}
+
 @keyframes loading {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
@@ -526,6 +556,15 @@ body {
     .container {
         padding: 1rem;
     }
+
+    .auth-icon-button {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .auth-icon-button i {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -559,6 +598,12 @@ body {
     }
 }
 
+@media (max-width: 480px) {
+    .nav-right {
+        gap: 0.75rem;
+    }
+}
+
 /* Fix zoom issues on mobile */
 @viewport {
     width: device-width;
@@ -567,4 +612,16 @@ body {
 
 @-ms-viewport {
     width: device-width;
+}
+
+/* Styles for logged-in state */
+.user-logged-in .auth-icon-button {
+    background: var(--bg-color);
+    color: var(--text-primary);
+    border: 2px solid var(--primary-color);
+}
+
+.user-logged-in .auth-icon-button:hover {
+    background: var(--primary-color);
+    color: white;
 }
