@@ -11,6 +11,7 @@ router.get('/search', async (req, res) => {
             params: {
                 title: query,
                 limit: 5,
+                includes: ['cover_art'],
                 order: {
                     relevance: 'desc'
                 }

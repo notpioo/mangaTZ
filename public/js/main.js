@@ -15,8 +15,8 @@ closeSidebarButton.addEventListener('click', () => {
 
 // Close sidebar when clicking outside
 document.addEventListener('click', (e) => {
-    if (!sidebar.contains(e.target) && 
-        !menuButton.contains(e.target) && 
+    if (!sidebar.contains(e.target) &&
+        !menuButton.contains(e.target) &&
         sidebar.classList.contains('active')) {
         sidebar.classList.remove('active');
     }
@@ -42,65 +42,115 @@ function nextSlide() {
 // Auto advance slides every 5 seconds
 setInterval(nextSlide, 5000);
 
-// Modifikasi fungsi fetch
-async function fetchPopularManga() {
-    showLoading('popular-manga');
-    try {
-        const response = await fetch('/api/manga/popular');
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+// Search functionality
+const searchContainer = document.querySelector('.search-container');
+const searchInput = document.querySelector('.search-input');
+const searchResults = document.createElement('div');
+searchResults.className = 'search-results';
+searchContainer.appendChild(searchResults);
 
-        const data = await response.json();
-        if (!data.data || !Array.isArray(data.data)) {
-            throw new Error('Invalid data format received');
-        }
+let searchTimeout;
 
-        await displayManga(data.data, 'popular-manga');
-    } catch (error) {
-        console.error('Error fetching popular manga:', error);
-        showError('popular-manga', `Failed to load popular manga. ${error.message}`);
+searchInput.addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
     }
+
+    if (!query) {
+        searchResults.style.display = 'none';
+        return;
+    }
+
+    searchTimeout = setTimeout(async () => {
+        try {
+            const response = await fetch(`/api/manga/search?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+
+            searchResults.style.display = 'block';
+            searchResults.innerHTML = '';
+
+            if (data.data && data.data.length > 0) {
+                data.data.forEach(manga => {
+                    const title = manga.attributes.title.en ||
+                                manga.attributes.title.ja ||
+                                manga.attributes.title['ja-ro'] ||
+                                Object.values(manga.attributes.title)[0];
+
+                    const coverRelationship = manga.relationships.find(rel => rel.type === 'cover_art');
+                    const coverUrl = coverRelationship && coverRelationship.attributes?.fileName ?
+                        `/api/manga/cover/${manga.id}/${coverRelationship.attributes.fileName}` :
+                        '/images/no-image.png';
+
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.innerHTML = `
+                        <a href="/manga/${manga.id}" class="search-result-link">
+                            <img src="${coverUrl}" class="search-result-cover" 
+                                 onerror="this.src='/images/no-image.png'" 
+                                 alt="${title}" loading="lazy">
+                            <div class="search-result-title">${title}</div>
+                        </a>
+                    `;
+                    searchResults.appendChild(resultItem);
+                });
+            } else {
+                searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            searchResults.innerHTML = '<div class="search-error">Error searching manga</div>';
+        }
+    }, 300);
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', function(e) {
+    if (!searchContainer.contains(e.target)) {
+        searchResults.style.display = 'none';
+    }
+});
+
+const searchBtnSearch = document.querySelector('.search-btn.search');
+const searchBtnCancel = document.querySelector('.search-btn.cancel');
+
+if (searchBtnSearch && searchBtnCancel) {
+    searchBtnSearch.addEventListener('click', function() {
+        searchContainer.classList.add('active');
+        searchInput.focus();
+    });
+
+    searchBtnCancel.addEventListener('click', function() {
+        searchContainer.classList.remove('active');
+        searchInput.value = '';
+        searchResults.style.display = 'none';
+    });
 }
 
-async function fetchLatestManga() {
-    showLoading('latest-manga');
-    try {
-        const response = await fetch('/api/manga/latest');
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        await displayManga(data.data, 'latest-manga');
-    } catch (error) {
-        console.error('Error fetching latest manga:', error);
-        document.getElementById('latest-manga').innerHTML = `
-            <div class="error-message">
-                Failed to load latest manga. ${error.message}
-            </div>
-        `;
-    }
-}
-
-// Update this line in main.js
+// Manga cover fetching
 async function fetchMangaCovers(manga) {
-    if (!manga.relationships) return null;
+    if (!manga.relationships) return '/images/no-image.png';
 
     const coverRelationship = manga.relationships.find(rel => rel.type === 'cover_art');
-    if (!coverRelationship) return null;
+    if (!coverRelationship || !coverRelationship.attributes?.fileName) return '/images/no-image.png';
 
-    const fileName = coverRelationship.attributes?.fileName;
-    if (!fileName) return null;
-
-    // Update URL to use relative path
-    return `/api/cover/${manga.id}/${fileName}`;
+    try {
+        const coverResponse = await fetch(`https://api.mangadex.org/cover/${coverRelationship.id}`);
+        const coverData = await coverResponse.json();
+        
+        if (coverData.data?.attributes?.fileName) {
+            return `https://uploads.mangadex.org/covers/${manga.id}/${coverData.data.attributes.fileName}.256.jpg`;
+        }
+    } catch (error) {
+        console.error('Error fetching cover:', error);
+    }
+    
+    return `/api/manga/cover/${manga.id}/${coverRelationship.attributes.fileName}`;
 }
 
-// Di main.js, modifikasi fungsi displayManga
-// Di main.js, update fungsi displayManga
+// Display manga in container
 async function displayManga(mangaList, containerId) {
     if (!mangaList || mangaList.length === 0) return;
 
@@ -179,6 +229,90 @@ async function displayManga(mangaList, containerId) {
     initSlider(containerId);
 }
 
+// Fetch and display popular manga
+async function fetchPopularManga() {
+    try {
+        const response = await fetch('/api/manga/popular');
+        const data = await response.json();
+        if (data.data) {
+            await displayManga(data.data, 'popular-manga');
+        }
+    } catch (error) {
+        console.error('Error fetching popular manga:', error);
+    }
+}
+
+// Fetch and display latest manga
+async function fetchLatestManga() {
+    showLoading('latest-manga');
+    try {
+        const response = await fetch('/api/manga/latest');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        await displayManga(data.data, 'latest-manga');
+    } catch (error) {
+        console.error('Error fetching latest manga:', error);
+        showError('latest-manga', `Failed to load latest manga. ${error.message}`);
+    }
+}
+
+// Loading state function (unchanged)
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        const loadingGrid = document.createElement('div');
+        loadingGrid.className = 'manga-grid';
+
+        for (let i = 0; i < 12; i++) {
+            const loadingCard = document.createElement('div');
+            loadingCard.className = 'manga-card';
+            loadingCard.innerHTML = `
+                <div class="manga-cover-wrapper loading"></div>
+                <div class="manga-info">
+                    <div class="manga-title loading" style="height: 1rem; margin-bottom: 0.5rem;"></div>
+                    <div class="manga-details">
+                        <div class="loading" style="height: 1rem; width: 50%;"></div>
+                    </div>
+                </div>
+            `;
+            loadingGrid.appendChild(loadingCard);
+        }
+
+        container.innerHTML = '';
+        container.appendChild(loadingGrid);
+    }
+}
+
+// Error display function (unchanged)
+function showError(containerId, message) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                ${message}
+            </div>
+        `;
+    }
+}
+
+
+// Tambahkan fungsi untuk preload placeholder image
+function preloadPlaceholder() {
+    const img = new Image();
+    img.src = '/images/no-image.png';
+}
+
+// Panggil preload saat dokumen dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    preloadPlaceholder();
+    fetchPopularManga().catch(err => console.error('Error in popular manga:', err));
+    fetchLatestManga().catch(err => console.error('Error in latest manga:', err));
+});
+
+
 // Slider initialization function
 function initSlider(containerId) {
     const container = document.getElementById(containerId);
@@ -222,138 +356,3 @@ function initSlider(containerId) {
     // Update buttons on window resize
     window.addEventListener('resize', updateButtons);
 }
-
-// Loading state function (unchanged)
-function showLoading(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        const loadingGrid = document.createElement('div');
-        loadingGrid.className = 'manga-grid';
-
-        for (let i = 0; i < 12; i++) {
-            const loadingCard = document.createElement('div');
-            loadingCard.className = 'manga-card';
-            loadingCard.innerHTML = `
-                <div class="manga-cover-wrapper loading"></div>
-                <div class="manga-info">
-                    <div class="manga-title loading" style="height: 1rem; margin-bottom: 0.5rem;"></div>
-                    <div class="manga-details">
-                        <div class="loading" style="height: 1rem; width: 50%;"></div>
-                    </div>
-                </div>
-            `;
-            loadingGrid.appendChild(loadingCard);
-        }
-
-        container.innerHTML = '';
-        container.appendChild(loadingGrid);
-    }
-}
-
-// Error display function (unchanged)
-function showError(containerId, message) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                ${message}
-            </div>
-        `;
-    }
-}
-
-// Tambahkan fungsi untuk preload placeholder image
-function preloadPlaceholder() {
-    const img = new Image();
-    img.src = '/images/no-image.png';
-}
-
-// Panggil preload saat dokumen dimuat
-document.addEventListener('DOMContentLoaded', () => {
-    preloadPlaceholder();
-    fetchPopularManga().catch(err => console.error('Error in popular manga:', err));
-    fetchLatestManga().catch(err => console.error('Error in latest manga:', err));
-});
-
-// Scripts
-document.addEventListener('DOMContentLoaded', function() {
-    const searchContainer = document.querySelector('.search-container');
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
-    let searchTimeout;
-
-    // Create search results container
-    const searchResults = document.createElement('div');
-    searchResults.className = 'search-results';
-    searchContainer.appendChild(searchResults);
-
-    searchInput.addEventListener('input', function(e) {
-        const query = e.target.value.trim();
-
-        // Clear previous timeout
-        clearTimeout(searchTimeout);
-
-        // Hide results if query is empty
-        if (!query) {
-            searchResults.style.display = 'none';
-            return;
-        }
-
-        // Show loading state
-        searchResults.style.display = 'block';
-        searchResults.innerHTML = '<div class="search-result-item">Searching...</div>';
-
-        // Set new timeout for search
-        searchTimeout = setTimeout(async () => {
-            try {
-                const response = await fetch(`/api/manga/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-
-                // Show results container
-                searchResults.style.display = 'block';
-
-                // Clear previous results
-                searchResults.innerHTML = '';
-
-                // Display results
-                if (data.data && data.data.length > 0) {
-                    data.data.forEach(manga => {
-                        const title = manga.attributes.title.en || 
-                                    manga.attributes.title.ja || 
-                                    manga.attributes.title['ja-ro'] ||
-                                    Object.values(manga.attributes.title)[0];
-
-                        const resultItem = document.createElement('div');
-                        resultItem.className = 'search-result-item';
-                        resultItem.innerHTML = `
-                            <a href="/manga/${manga.id}" class="search-result-link">
-                                <div class="search-result-title">${title}</div>
-                            </a>
-                        `;
-                        searchResults.appendChild(resultItem);
-                    });
-                } else {
-                    searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
-                }
-            } catch (error) {
-                console.error('Search error:', error);
-                searchResults.innerHTML = '<div class="search-error">Error searching manga</div>';
-            }
-        }, 300); // Delay of 300ms
-    });
-
-    // Close search results when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchContainer.contains(e.target)) {
-            searchResults.style.display = 'none';
-        }
-    });
-
-    if (window.innerWidth <= 576) {
-        searchBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            searchContainer.classList.toggle('active');
-        });
-    }
-});
