@@ -1,9 +1,29 @@
-// Di routes/manga.js, tambahkan route untuk proxy cover
+
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-// Route yang sudah ada untuk popular manga
+// Search endpoint
+router.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q?.toLowerCase() || '';
+        const response = await axios.get(`https://api.mangadex.org/manga`, {
+            params: {
+                title: query,
+                limit: 5,
+                order: {
+                    relevance: 'desc'
+                }
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({ error: 'Failed to search manga' });
+    }
+});
+
+// Popular manga route
 router.get('/popular', async (req, res) => {
     try {
         const response = await axios.get('https://api.mangadex.org/manga', {
@@ -22,7 +42,7 @@ router.get('/popular', async (req, res) => {
     }
 });
 
-// Route yang sudah ada untuk latest manga
+// Latest manga route
 router.get('/latest', async (req, res) => {
     try {
         const response = await axios.get('https://api.mangadex.org/manga', {
@@ -40,7 +60,7 @@ router.get('/latest', async (req, res) => {
     }
 });
 
-// Tambahkan route baru untuk proxy cover
+// Cover proxy route
 router.get('/cover/:mangaId/:fileName', async (req, res) => {
     try {
         const { mangaId, fileName } = req.params;
@@ -50,10 +70,7 @@ router.get('/cover/:mangaId/:fileName', async (req, res) => {
             responseType: 'stream'
         });
         
-        // Set header Content-Type sesuai dengan response
         res.set('Content-Type', response.headers['content-type']);
-        
-        // Pipe response stream ke client
         response.data.pipe(res);
     } catch (error) {
         console.error('Error fetching cover:', error.message);

@@ -279,7 +279,76 @@ document.addEventListener('DOMContentLoaded', () => {
 // Scripts
 document.addEventListener('DOMContentLoaded', function() {
     const searchContainer = document.querySelector('.search-container');
+    const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
+    let searchTimeout;
+
+    // Create search results container
+    const searchResults = document.createElement('div');
+    searchResults.className = 'search-results';
+    searchContainer.appendChild(searchResults);
+
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+
+        // Hide results if query is empty
+        if (!query) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        // Show loading state
+        searchResults.style.display = 'block';
+        searchResults.innerHTML = '<div class="search-result-item">Searching...</div>';
+
+        // Set new timeout for search
+        searchTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`/api/manga/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                // Show results container
+                searchResults.style.display = 'block';
+
+                // Clear previous results
+                searchResults.innerHTML = '';
+
+                // Display results
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(manga => {
+                        const title = manga.attributes.title.en || 
+                                    manga.attributes.title.ja || 
+                                    manga.attributes.title['ja-ro'] ||
+                                    Object.values(manga.attributes.title)[0];
+
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        resultItem.innerHTML = `
+                            <a href="/manga/${manga.id}" class="search-result-link">
+                                <div class="search-result-title">${title}</div>
+                            </a>
+                        `;
+                        searchResults.appendChild(resultItem);
+                    });
+                } else {
+                    searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                searchResults.innerHTML = '<div class="search-error">Error searching manga</div>';
+            }
+        }, 300); // Delay of 300ms
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchContainer.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
 
     if (window.innerWidth <= 576) {
         searchBtn.addEventListener('click', function(e) {
