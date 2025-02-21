@@ -1,4 +1,3 @@
-
 import { auth, db } from './config/firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -91,10 +90,10 @@ if (window.location.pathname === '/auth.html') {
 const updateAuthButton = (user) => {
     const authButton = document.getElementById('authButton');
     if (!authButton) return;
-    
+
     if (user) {
-        const avatarUrl = user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
-        authButton.innerHTML = `<img src="${avatarUrl}" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%;">`;
+        const avatarUrl = user.photoURL || '/images/profile.png';
+        authButton.innerHTML = `<img src="${avatarUrl}" alt="Profile" style="width: 34px; height: 34px; border-radius: 50%;">`;
         authButton.href = '/profile.html';
     } else {
         authButton.innerHTML = '<i class="fas fa-user"></i>';

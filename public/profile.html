@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,9 +29,16 @@
                     <h2 id="displayNameLabel" class="profile-name">Username</h2>
                 </div>
                 <div class="profile-actions">
-                    <button class="action-btn more-btn">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
+                    <div class="more-options">
+                        <button class="action-btn more-btn">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <div id="moreMenu" class="more-menu" style="display: none;">
+                            <button id="logoutBtn" class="menu-item">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -56,17 +64,17 @@
                         <label for="displayName">Display Name</label>
                         <input type="text" id="displayName" placeholder="Enter your display name">
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="Enter your email">
-                    </div>
                     <button id="saveProfileBtn" class="action-btn primary">
                         <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button id="changePasswordBtn" class="action-btn secondary">
+                        <i class="fas fa-key"></i> Change Password
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="/js/profile.js"></script>
 </body>
 </html>
