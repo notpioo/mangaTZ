@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,41 +10,58 @@
     <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
+    <button onclick="window.history.back()" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
     <div class="profile-container">
-        <div class="profile-header">
-            <button class="back-btn" onclick="window.location.href='/'">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-            <h1>Profile</h1>
+        <div class="banner">
+            <img src="/images/wallpaper.jpg" alt="Banner" class="banner-img">
         </div>
         
         <div class="profile-content">
-            <div class="profile-avatar">
-                <img id="userAvatar" src="/images/default-avatar.png" alt="Profile">
-                <h2 id="displayNameLabel" class="profile-name">User</h2>
-                <div class="avatar-selection">
-                    <h3>Choose Avatar Style</h3>
-                    <div class="avatar-grid" id="avatarGrid">
-                        <!-- Avatars will be generated dynamically -->
+            <div class="profile-header">
+                <div class="profile-avatar-section">
+                    <div class="avatar-wrapper">
+                        <img id="userAvatar" src="/images/default-avatar.png" alt="Profile" class="profile-avatar">
                     </div>
+                    <h2 id="displayNameLabel" class="profile-name">Username</h2>
+                </div>
+                <div class="profile-actions">
+                    <button class="action-btn more-btn">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="profile-info">
-                <div class="form-group">
-                    <label>Display Name</label>
-                    <input type="text" id="displayName" placeholder="Your name">
+
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="info">Info</button>
+                <button class="tab-btn" data-tab="settings">Settings</button>
+            </div>
+
+            <div id="infoTab" class="tab-content active">
+                <div class="info-section">
+                    <h3>Roles</h3>
+                    <p class="role-tag">User</p>
                 </div>
-                
-                <div class="profile-actions">
+                <button class="action-btn favorite-btn">
+                    <i class="fas fa-heart"></i>
+                    My Favorite
+                </button>
+            </div>
+
+            <div id="settingsTab" class="tab-content">
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" placeholder="Enter your display name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
                     <button id="saveProfileBtn" class="action-btn primary">
                         <i class="fas fa-save"></i> Save Changes
-                    </button>
-                    <button id="myListBtn" class="action-btn">
-                        <i class="fas fa-list"></i> My List
-                    </button>
-                    <button id="logoutBtn" class="action-btn danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
             </div>
