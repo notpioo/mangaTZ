@@ -29,7 +29,7 @@ const bannerDots = document.querySelectorAll('.banner-dot');
 function showSlide(index) {
     bannerSlides.forEach(slide => slide.classList.remove('active'));
     bannerDots.forEach(dot => dot.classList.remove('active'));
-    
+
     bannerSlides[index].classList.add('active');
     bannerDots[index].classList.add('active');
 }
@@ -47,16 +47,16 @@ async function fetchPopularManga() {
     showLoading('popular-manga');
     try {
         const response = await fetch('/api/manga/popular');
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         if (!data.data || !Array.isArray(data.data)) {
             throw new Error('Invalid data format received');
         }
-        
+
         await displayManga(data.data, 'popular-manga');
     } catch (error) {
         console.error('Error fetching popular manga:', error);
@@ -68,11 +68,11 @@ async function fetchLatestManga() {
     showLoading('latest-manga');
     try {
         const response = await fetch('/api/manga/latest');
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         await displayManga(data.data, 'latest-manga');
     } catch (error) {
@@ -88,7 +88,7 @@ async function fetchLatestManga() {
 // Update this line in main.js
 async function fetchMangaCovers(manga) {
     if (!manga.relationships) return null;
-    
+
     const coverRelationship = manga.relationships.find(rel => rel.type === 'cover_art');
     if (!coverRelationship) return null;
 
@@ -125,12 +125,12 @@ async function displayManga(mangaList, containerId) {
 
     const mangaGrid = container.querySelector('.manga-grid');
     const placeholderImage = '/images/no-image.png';
-    
+
     for (const manga of mangaList) {
         try {
             const card = document.createElement('div');
             card.className = 'manga-card';
-            
+
             // Get manga title
             let title = 'Unknown Title';
             if (manga.attributes?.title) {
@@ -140,7 +140,7 @@ async function displayManga(mangaList, containerId) {
                        Object.values(manga.attributes.title)[0] ||
                        'Unknown Title';
             }
-            
+
             // Get cover URL menggunakan route proxy baru
             let coverUrl = placeholderImage;
             if (manga.relationships) {
@@ -149,7 +149,7 @@ async function displayManga(mangaList, containerId) {
                     coverUrl = `/api/manga/cover/${manga.id}/${coverArt.attributes.fileName}`;
                 }
             }
-            
+
             card.innerHTML = `
                 <div class="manga-cover-wrapper">
                     <img 
@@ -168,7 +168,7 @@ async function displayManga(mangaList, containerId) {
                     </div>
                 </div>
             `;
-            
+
             mangaGrid.appendChild(card);
         } catch (error) {
             console.error('Error creating manga card:', error);
@@ -185,9 +185,9 @@ function initSlider(containerId) {
     const slider = container.querySelector('.manga-slider-container');
     const prevBtn = container.querySelector('.slider-button.prev');
     const nextBtn = container.querySelector('.slider-button.next');
-    
+
     const scrollAmount = 160 + 16; // card width + gap
-    
+
     // Previous button click handler
     prevBtn.addEventListener('click', () => {
         slider.scrollBy({
@@ -195,7 +195,7 @@ function initSlider(containerId) {
             behavior: 'smooth'
         });
     });
-    
+
     // Next button click handler
     nextBtn.addEventListener('click', () => {
         slider.scrollBy({
@@ -203,22 +203,22 @@ function initSlider(containerId) {
             behavior: 'smooth'
         });
     });
-    
+
     // Update button visibility based on scroll position
     function updateButtons() {
         const isAtStart = slider.scrollLeft === 0;
         const isAtEnd = slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10; // small buffer
-        
+
         prevBtn.style.display = isAtStart ? 'none' : 'flex';
         nextBtn.style.display = isAtEnd ? 'none' : 'flex';
     }
-    
+
     // Initial button state
     updateButtons();
-    
+
     // Update buttons on scroll
     slider.addEventListener('scroll', updateButtons);
-    
+
     // Update buttons on window resize
     window.addEventListener('resize', updateButtons);
 }
@@ -229,7 +229,7 @@ function showLoading(containerId) {
     if (container) {
         const loadingGrid = document.createElement('div');
         loadingGrid.className = 'manga-grid';
-        
+
         for (let i = 0; i < 12; i++) {
             const loadingCard = document.createElement('div');
             loadingCard.className = 'manga-card';
@@ -244,7 +244,7 @@ function showLoading(containerId) {
             `;
             loadingGrid.appendChild(loadingCard);
         }
-        
+
         container.innerHTML = '';
         container.appendChild(loadingGrid);
     }
@@ -274,4 +274,17 @@ document.addEventListener('DOMContentLoaded', () => {
     preloadPlaceholder();
     fetchPopularManga().catch(err => console.error('Error in popular manga:', err));
     fetchLatestManga().catch(err => console.error('Error in latest manga:', err));
+});
+
+// Scripts
+document.addEventListener('DOMContentLoaded', function() {
+    const searchContainer = document.querySelector('.search-container');
+    const searchBtn = document.querySelector('.search-btn');
+
+    if (window.innerWidth <= 576) {
+        searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchContainer.classList.toggle('active');
+        });
+    }
 });

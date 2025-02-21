@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaTZ - Login/Register</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h2 id="authTitle">Login</h2>
+                <p id="authSubtitle">Welcome back to MangaTZ!</p>
+            </div>
+            <form id="authForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" id="authSubmit">Login</button>
+            </form>
+            <div class="auth-alternatives">
+                <button class="auth-alt-btn" id="googleAuth">
+                    <i class="fab fa-google"></i>
+                    Continue with Google
+                </button>
+                <button class="auth-alt-btn" id="anonymousAuth">
+                    <i class="fas fa-user-secret"></i>
+                    Continue Anonymously
+                </button>
+            </div>
+            <p class="auth-switch">
+                <span id="switchText">Don't have an account?</span>
+                <a href="#" id="switchAuth">Register</a>
+            </p>
+        </div>
+    </div>
+    <script type="module" src="/js/auth.js"></script>
+</body>
+</html>

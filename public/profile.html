@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - MangaTZ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <button class="back-btn" onclick="window.location.href='/'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h1>Profile</h1>
+        </div>
+        
+        <div class="profile-content">
+            <div class="profile-avatar">
+                <img id="userAvatar" src="/images/default-avatar.png" alt="Profile">
+                <h2 id="displayNameLabel" class="profile-name">User</h2>
+                <div class="avatar-selection">
+                    <h3>Choose Avatar Style</h3>
+                    <div class="avatar-grid" id="avatarGrid">
+                        <!-- Avatars will be generated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="displayName" placeholder="Your name">
+                </div>
+                
+                <div class="profile-actions">
+                    <button id="saveProfileBtn" class="action-btn primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button id="myListBtn" class="action-btn">
+                        <i class="fas fa-list"></i> My List
+                    </button>
+                    <button id="logoutBtn" class="action-btn danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/js/profile.js"></script>
+</body>
+</html>

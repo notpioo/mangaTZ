@@ -46,6 +46,9 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+                <a href="/auth.html" class="auth-icon-button" id="authButton">
+                    <i class="fas fa-user"></i>
+                </a>
             </div>
             </nav>
 
@@ -87,35 +90,11 @@
     <!-- Scripts -->
     <!-- Firebase Configuration -->
     <script type="module" src="/js/config/firebase.js"></script>
-    
+
     <!-- Main Application Scripts -->
     <script src="/js/main.js" defer></script>
     <script type="module" src="/js/auth.js"></script>
 
-    <!-- Initialize Firebase UI -->
-    <script type="module">
-        // Auth state observer
-        import { auth } from '/js/config/firebase.js';
-        
-        auth.onAuthStateChanged((user) => {
-            const authButton = document.getElementById('openAuthModal');
-            
-            if (user) {
-                // Update button for logged in state
-                authButton.innerHTML = `
-                    <i class="fas fa-user"></i>
-                    <span>${user.displayName || 'Profile'}</span>
-                `;
-                document.body.classList.add('user-logged-in');
-            } else {
-                // Reset button to default state
-                authButton.innerHTML = `
-                    <i class="fas fa-user"></i>
-                    <span>Login</span>
-                `;
-                document.body.classList.remove('user-logged-in');
-            }
-        });
-    </script>
+    <!-- Scripts -->
 </body>
 </html>

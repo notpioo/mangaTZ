@@ -533,26 +533,28 @@ body {
     :root {
         --sidebar-width: 100%;
     }
-    
+
     .navbar {
         padding: 0.75rem 1rem;
     }
-    
+
     .search-container {
         width: 200px;
+        display: flex;
+        align-items: center;
     }
-    
+
     .manga-card {
         flex: 0 0 160px;
         min-width: 160px;
     }
-    
+
     .banner-slider {
         height: 200px;
         border-radius: 12px;
         margin: 1rem 0;
     }
-    
+
     .container {
         padding: 1rem;
     }
@@ -561,7 +563,7 @@ body {
         width: 36px;
         height: 36px;
     }
-    
+
     .auth-icon-button i {
         font-size: 1rem;
     }
@@ -569,9 +571,31 @@ body {
 
 @media (max-width: 576px) {
     .search-container {
-        width: 160px;
+        width: auto;
     }
-    
+    .search-container .search-input {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        padding: 10px;
+        background: white;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .search-container.active .search-input {
+        display: block;
+    }
+
+    .search-container .search-btn {
+        background: none;
+        border: none;
+        padding: 8px;
+    }
+
     .manga-card {
         flex: 0 0 140px;
         min-width: 140px;
@@ -580,19 +604,19 @@ body {
     .manga-grid-container {
         padding: 0.5rem;
     }
-    
+
     .section-header {
         padding: 1rem;
     }
-    
+
     .banner-info {
         padding: 1rem;
     }
-    
+
     .banner-title {
         font-size: 1.25rem;
     }
-    
+
     .banner-description {
         font-size: 0.9rem;
     }
