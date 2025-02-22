@@ -68,14 +68,49 @@ router.get('/cover/:mangaId/:fileName', async (req, res) => {
         const coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
         
         const response = await axios.get(coverUrl, {
-            responseType: 'stream'
+            responseType: 'stream',
+            timeout: 5000 // Tambahkan timeout
         });
         
+        // Set cache headers
+        res.set('Cache-Control', 'public, max-age=86400'); // Cache selama 24 jam
         res.set('Content-Type', response.headers['content-type']);
         response.data.pipe(res);
     } catch (error) {
         console.error('Error fetching cover:', error.message);
-        res.status(500).json({ error: 'Failed to fetch cover' });
+        // Redirect ke no-image jika gagal
+        res.redirect('/images/no-image.png');
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const mangaId = req.params.id;
+        const response = await axios.get(`https://api.mangadex.org/manga/${mangaId}`, {
+            params: {
+                'includes[]': ['cover_art', 'author', 'artist', 'tag']
+            }
+        });
+
+        // Get chapters for this manga
+        const chaptersResponse = await axios.get(`https://api.mangadex.org/manga/${mangaId}/feed`, {
+            params: {
+                'translatedLanguage[]': ['en'],
+                'order[chapter]': 'desc',
+                'limit': 100,
+                'offset': 0
+            }
+        });
+
+        const responseData = {
+            manga: response.data,
+            chapters: chaptersResponse.data
+        };
+
+        res.json(responseData);
+    } catch (error) {
+        console.error('Error fetching manga details:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch manga details' });
     }
 });
 

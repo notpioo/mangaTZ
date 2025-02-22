@@ -1,0 +1,336 @@
+.manga-detail-container {
+    min-height: 100vh;
+    background: var(--bg-color);
+    position: relative;
+}
+
+.manga-banner {
+    width: 100%;
+    max-width: 800px;
+    height: 270px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+    margin: 0 auto;
+    border-radius: 0 0 16px 16px;
+}
+
+.manga-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    text-indent: -9999px;
+    font-size: 0;
+}
+
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    transition: transform 0.2s;
+}
+
+.back-button:hover {
+    transform: scale(1.1);
+}
+
+.manga-detail-content {
+    max-width: 800px;
+    margin: -20px auto 0;
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+}
+
+.manga-info-wrapper {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+}
+
+.manga-header {
+    display: flex;
+    gap: 2rem;
+    margin-top: -80px;
+    margin-bottom: 1rem;
+}
+
+.manga-cover-wrapper {
+    flex-shrink: 0;
+    width: 200px;
+}
+
+.manga-cover {
+    width: 200px;
+    height: 300px;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    object-fit: cover;
+    border: 4px solid white;
+    transition: transform 0.3s ease;
+}
+
+.manga-cover:hover {
+    transform: scale(1.05);
+}
+
+.manga-title-section {
+    flex-grow: 1;
+    padding-top: 60px;
+}
+
+.manga-title {
+    color: var(--text-primary);
+    font-size: 1.8em;
+    margin: 0 0 0.5rem 0;
+}
+
+.manga-title-jp {
+    color: var(--text-secondary);
+    font-size: 1.2em;
+    margin: 0 0 1rem 0;
+    font-weight: normal;
+}
+
+.manga-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.action-button.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.action-button.primary:hover {
+    opacity: 0.9;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+    background: var(--bg-hover);
+    transform: scale(1.1);
+}
+
+.info-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 1.5rem 0;
+}
+
+.tag {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--bg-color);
+    font-size: 0.9em;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+}
+
+.info-stats {
+    display: flex;
+    gap: 30px;
+    margin: 1rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--bg-color);
+    border-bottom: 1px solid var(--bg-color);
+}
+
+.info-description {
+    line-height: 1.8;
+    color: var(--text-primary);
+    font-size: 1.05em;
+    text-align: justify;
+    margin-top: 1rem;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+}
+
+.chapter-list {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 40px;
+}
+
+.chapter-list h3 {
+    margin: 0 0 20px 0;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--bg-color);
+    font-size: 1.4em;
+    color: var(--text-primary);
+}
+
+.chapters-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.chapters-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chapters-container::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.chapters-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.chapter-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--bg-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.chapter-item:hover {
+    background: var(--bg-color);
+    transform: translateX(5px);
+}
+
+.chapter-title {
+    font-weight: 500;
+    font-size: 1.05em;
+    color: var(--text-primary);
+}
+
+.chapter-info {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+@media (max-width: 768px) {
+    .manga-banner {
+        height: 180px;
+    }
+    
+    .manga-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .manga-cover-wrapper {
+        width: 160px;
+    }
+    
+    .manga-cover {
+        width: 160px;
+        height: 240px;
+    }
+    
+    .manga-title-section {
+        padding-top: 0;
+    }
+    
+    .manga-title {
+        font-size: 1.5em;
+    }
+    
+    .manga-actions {
+        justify-content: center;
+    }
+    
+    .info-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .manga-banner {
+        height: 160px;
+    }
+
+    .manga-info-wrapper {
+        padding: 1.5rem;
+    }
+
+    .manga-cover-wrapper {
+        width: 140px;
+    }
+
+    .manga-cover {
+        width: 140px;
+        height: 210px;
+    }
+
+    .manga-title {
+        font-size: 1.3em;
+    }
+
+    .manga-title-jp {
+        font-size: 1em;
+    }
+
+    .action-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}

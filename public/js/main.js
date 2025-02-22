@@ -139,14 +139,14 @@ async function fetchMangaCovers(manga) {
     try {
         const coverResponse = await fetch(`https://api.mangadex.org/cover/${coverRelationship.id}`);
         const coverData = await coverResponse.json();
-        
+
         if (coverData.data?.attributes?.fileName) {
             return `https://uploads.mangadex.org/covers/${manga.id}/${coverData.data.attributes.fileName}.256.jpg`;
         }
     } catch (error) {
         console.error('Error fetching cover:', error);
     }
-    
+
     return `/api/manga/cover/${manga.id}/${coverRelationship.attributes.fileName}`;
 }
 
@@ -218,6 +218,10 @@ async function displayManga(mangaList, containerId) {
                     </div>
                 </div>
             `;
+
+            card.addEventListener('click', () => {
+                window.location.href = `/manga-detail.html?id=${manga.id}`;
+            });
 
             mangaGrid.appendChild(card);
         } catch (error) {
