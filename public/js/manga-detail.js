@@ -40,16 +40,6 @@ async function loadMangaDetails(mangaId) {
         document.getElementById('mangaTitle').textContent = titles.en || titles['ja-ro'] || Object.values(titles)[0];
         document.getElementById('mangaTitleJp').textContent = titles.ja || '';
 
-        // Set status
-        const statusMap = {
-            'ongoing': 'Ongoing',
-            'completed': 'Completed',
-            'hiatus': 'On Hiatus',
-            'cancelled': 'Cancelled'
-        };
-        const status = statusMap[manga.attributes.status] || 'Unknown';
-        document.getElementById('mangaStatus').textContent = status;
-
         // Set tags
         const tagsContainer = document.getElementById('mangaTags');
         manga.attributes.tags.forEach(tag => {
@@ -96,49 +86,13 @@ async function loadMangaDetails(mangaId) {
     }
 }
 
-let allChapters = [];
-
 function displayChapters(chapters) {
-    allChapters = chapters;
     const container = document.querySelector('.chapters-container');
-    container.innerHTML = '';
-
-    // Setup search functionality
-    const searchInput = document.getElementById('chapterSearch');
-    searchInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredChapters = allChapters.filter(chapter =>
-            chapter.attributes.chapter.toLowerCase().includes(searchTerm)
-        );
-        renderChapters(filteredChapters);
-    });
-
-    renderChapters(chapters);
-}
-
-// Tab switching
-document.querySelectorAll('.tab-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.style.display = 'none';
-        });
-        document.getElementById(`${button.dataset.tab}Tab`).style.display = 'block';
-    });
-});
-
-
-function renderChapters(chapters) {
-    const container = document.querySelector('.chapters-container');
-    container.innerHTML = '';
-
+    
     chapters.forEach(chapter => {
         const chapterItem = document.createElement('div');
         chapterItem.className = 'chapter-item';
-        chapterItem.setAttribute('data-date', chapter.attributes.publishAt); // Add data-date attribute
-
+        
         const chapterNumber = chapter.attributes.chapter;
         const chapterTitle = chapter.attributes.title;
         const uploadDate = new Date(chapter.attributes.publishAt).toLocaleDateString();
@@ -158,88 +112,4 @@ function renderChapters(chapters) {
 
         container.appendChild(chapterItem);
     });
-}
-
-document.getElementById('chapterSort').addEventListener('change', function() {
-    const sortOrder = this.value;
-    const chaptersContainer = document.querySelector('.chapters-container');
-    const chapters = Array.from(chaptersContainer.children);
-
-    chapters.sort((a, b) => {
-        const dateA = new Date(a.getAttribute('data-date'));
-        const dateB = new Date(b.getAttribute('data-date'));
-        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-    });
-
-    chaptersContainer.innerHTML = '';
-    chapters.forEach(chapter => chaptersContainer.appendChild(chapter));
-});
-
-function filterChapters() {
-    const searchQuery = document.getElementById('chapterSearch').value.toLowerCase();
-    const chaptersContainer = document.querySelector('.chapters-container');
-    const chapters = Array.from(chaptersContainer.children);
-
-    //Filtering logic (This part needs more details to be implemented correctly)
-
-}
-
-
-let currentUser = {
-    id: '123', // This should be replaced with actual user ID
-    username: 'Current User',
-    avatar: '/images/default-avatar.png'
-};
-
-document.getElementById('submitComment').addEventListener('click', function() {
-    const commentText = document.getElementById('commentInput').value.trim();
-    if (!commentText) return;
-
-    const comment = {
-        id: Date.now().toString(),
-        userId: currentUser.id,
-        username: currentUser.username,
-        avatar: currentUser.avatar,
-        text: commentText,
-        date: new Date().toISOString()
-    };
-
-    addCommentToDOM(comment);
-    document.getElementById('commentInput').value = '';
-});
-
-function addCommentToDOM(comment) {
-    const commentsContainer = document.querySelector('.comments-container');
-    const commentElement = document.createElement('div');
-    commentElement.className = `comment-item ${comment.userId === currentUser.id ? 'own-comment' : ''}`;
-    commentElement.dataset.commentId = comment.id;
-
-    commentElement.innerHTML = `
-        <img src="${comment.avatar}" alt="${comment.username}" class="comment-avatar">
-        <div class="comment-content">
-            <div class="comment-header">
-                <span class="comment-username">${comment.username}</span>
-                <span class="comment-date">${new Date(comment.date).toLocaleDateString()}</span>
-            </div>
-            <p class="comment-text">${comment.text}</p>
-        </div>
-        ${comment.userId === currentUser.id ? `
-            <div class="comment-actions">
-                <button onclick="deleteComment('${comment.id}')">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
-            </div>
-        ` : ''}
-    `;
-
-    commentsContainer.prepend(commentElement);
-}
-
-function deleteComment(commentId) {
-    if (confirm('Are you sure you want to delete this comment?')) {
-        const commentElement = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
-        if (commentElement) {
-            commentElement.remove();
-        }
-    }
 }

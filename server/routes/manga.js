@@ -1,3 +1,4 @@
+
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
@@ -65,12 +66,12 @@ router.get('/cover/:mangaId/:fileName', async (req, res) => {
     try {
         const { mangaId, fileName } = req.params;
         const coverUrl = `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`;
-
+        
         const response = await axios.get(coverUrl, {
             responseType: 'stream',
             timeout: 5000 // Tambahkan timeout
         });
-
+        
         // Set cache headers
         res.set('Cache-Control', 'public, max-age=86400'); // Cache selama 24 jam
         res.set('Content-Type', response.headers['content-type']);
@@ -94,36 +95,27 @@ router.get('/:id', async (req, res) => {
         // Get chapters for this manga
         const chaptersResponse = await axios.get(`https://api.mangadex.org/manga/${mangaId}/feed`, {
             params: {
-                'translatedLanguage[]': ['en', 'id'],
+                'translatedLanguage[]': ['en'],
                 'order[chapter]': 'desc',
-                'limit': 500,
-                'offset': 0,
-                'includes[]': ['scanlation_group']
+                'limit': 100,
+                'offset': 0
             }
         });
-
-        // Get total chapters count
-        const totalChapters = chaptersResponse.data.total;
-        // Calculate total pages
-        const chaptersPerPage = 96;
-        const totalPages = Math.ceil(totalChapters / chaptersPerPage);
 
         // Get manga statistics
         const statsResponse = await axios.get(`https://api.mangadex.org/statistics/manga/${mangaId}`);
         const stats = statsResponse.data;
-
+        
         // Add rating to manga data
         if (stats.statistics && stats.statistics[mangaId]) {
             response.data.data.attributes.rating = {
                 average: stats.statistics[mangaId].rating.average || 0
             };
         }
-
+        
         const responseData = {
             manga: response.data,
-            chapters: chaptersResponse.data,
-            totalPages: totalPages,
-            totalChapters: totalChapters
+            chapters: chaptersResponse.data
         };
 
         res.json(responseData);

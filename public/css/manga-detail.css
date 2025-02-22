@@ -230,212 +230,12 @@
     margin-bottom: 40px;
 }
 
-.chapter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+.chapter-list h3 {
+    margin: 0 0 20px 0;
     padding-bottom: 15px;
     border-bottom: 2px solid var(--bg-color);
-}
-
-.chapter-list h3 {
-    margin: 0;
     font-size: 1.4em;
     color: var(--text-primary);
-}
-
-.manga-tabs {
-    margin-top: 2rem;
-}
-
-.tab-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.tab-btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    background: var(--bg-color);
-    color: var(--text-primary);
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.tab-btn.active {
-    background: var(--primary-color);
-    color: white;
-}
-
-.chapter-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.chapter-search {
-    position: relative;
-    width: 200px;
-}
-
-.chapter-sort {
-    width: 150px;
-    z-index: 1;
-}
-
-@media (max-width: 768px) {
-    .chapter-controls {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .chapter-search {
-        width: 100%;
-    }
-
-    .chapter-sort {
-        width: 100%;
-    }
-
-    .search-container.active {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        z-index: 100;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-}
-
-.comment-item {
-    position: relative;
-}
-
-.comment-actions {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    display: none;
-}
-
-.comment-item.own-comment .comment-actions {
-    display: block;
-}
-
-.comment-actions button {
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-
-.comment-actions button:hover {
-    color: var(--text-primary);
-}
-
-.chapter-sort select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--bg-color);
-    border-radius: 4px;
-    background: var(--bg-color);
-    color: var(--text-primary);
-}
-
-.comments-section {
-    padding: 1rem;
-}
-
-.comment-form {
-    margin-bottom: 2rem;
-}
-
-.comment-form textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 1rem;
-    border: 1px solid var(--bg-color);
-    border-radius: 8px;
-    background: var(--bg-color);
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-    resize: vertical;
-}
-
-.comment-form button {
-    padding: 0.75rem 1.5rem;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.comment-item {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    border-bottom: 1px solid var(--bg-color);
-}
-
-.comment-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.comment-content {
-    flex: 1;
-}
-
-.comment-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.comment-username {
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.comment-date {
-    color: var(--text-secondary);
-    font-size: 0.9em;
-}
-
-.comment-text {
-    color: var(--text-primary);
-    line-height: 1.5;
-}
-
-.chapter-search input {
-    width: 100%;
-    padding: 8px 30px 8px 12px;
-    border: 1px solid var(--bg-color);
-    border-radius: 4px;
-    background: var(--bg-color);
-    color: var(--text-primary);
-}
-
-.chapter-search i {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
 }
 
 .chapters-container {
@@ -485,39 +285,6 @@
     font-size: 0.95em;
 }
 
-.chapter-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: 1rem 0;
-}
-
-.pagination-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.pagination-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-.pagination-btn:hover:not(:disabled) {
-    background: var(--accent-color);
-}
-
-#currentPage {
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
 /* Language Toggle - New Feature */
 .language-toggle {
     margin-bottom: 1rem;
@@ -554,35 +321,35 @@
     .manga-banner {
         height: 180px;
     }
-
+    
     .manga-header {
         flex-direction: column;
         align-items: center;
         gap: 1rem;
         text-align: center;
     }
-
+    
     .manga-cover-wrapper {
         width: 160px;
     }
-
+    
     .manga-cover {
         width: 160px;
         height: 240px;
     }
-
+    
     .manga-title-section {
         padding-top: 0;
     }
-
+    
     .manga-title {
         font-size: 1.5em;
     }
-
+    
     .manga-actions {
         justify-content: center;
     }
-
+    
     .info-stats {
         flex-wrap: wrap;
         justify-content: center;
