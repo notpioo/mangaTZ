@@ -44,7 +44,9 @@
                 <div class="info-tags" id="mangaTags"></div>
                 
                 <div class="info-stats">
-                    <span class="stat"><i class="fas fa-star"></i> <span id="mangaRating">0.0</span></span>
+                    <span class="stat"><i class="fas fa-star"></i> <span id="mangaRating">0.00</span></span>
+                    <span class="stat"><i class="fas fa-info-circle"></i> <span id="mangaStatus">Unknown</span></span>
+                    <span class="stat"><i class="fas fa-user"></i> <span id="mangaAuthor">Unknown</span></span>
                 </div>
                 
                 <div class="description-container">
@@ -58,7 +60,12 @@
             </div>
     
             <div class="chapter-list">
-                <h3>Chapters</h3>
+                <div class="chapter-header">
+                    <h3>Chapters</h3>
+                    <div class="search-container">
+                        <input type="text" id="chapterSearch" placeholder="Search chapters...">
+                    </div>
+                </div>
                 <div class="chapters-container"></div>
             </div>
         </div>

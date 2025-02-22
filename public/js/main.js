@@ -87,7 +87,7 @@ searchInput.addEventListener('input', function(e) {
                     const resultItem = document.createElement('div');
                     resultItem.className = 'search-result-item';
                     resultItem.innerHTML = `
-                        <a href="/manga/${manga.id}" class="search-result-link">
+                        <a href="/manga-detail.html?id=${manga.id}" class="search-result-link">
                             <img src="${coverUrl}" class="search-result-cover" 
                                  onerror="this.src='/images/no-image.png'" 
                                  alt="${title}" loading="lazy">

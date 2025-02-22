@@ -97,7 +97,7 @@ router.get('/:id', async (req, res) => {
             params: {
                 'translatedLanguage[]': ['en'],
                 'order[chapter]': 'desc',
-                'limit': 100,
+                'limit': 500,
                 'offset': 0
             }
         });
