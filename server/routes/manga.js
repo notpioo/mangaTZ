@@ -102,6 +102,17 @@ router.get('/:id', async (req, res) => {
             }
         });
 
+        // Get manga statistics
+        const statsResponse = await axios.get(`https://api.mangadex.org/statistics/manga/${mangaId}`);
+        const stats = statsResponse.data;
+        
+        // Add rating to manga data
+        if (stats.statistics && stats.statistics[mangaId]) {
+            response.data.data.attributes.rating = {
+                average: stats.statistics[mangaId].rating.average || 0
+            };
+        }
+        
         const responseData = {
             manga: response.data,
             chapters: chaptersResponse.data

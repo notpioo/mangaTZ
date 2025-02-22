@@ -50,13 +50,32 @@ async function loadMangaDetails(mangaId) {
         });
 
         // Set description
-        const description = manga.attributes.description.en || Object.values(manga.attributes.description)[0];
-        document.getElementById('mangaDescription').textContent = description;
+        const cleanDescription = (desc) => {
+            return desc
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                .replace(/\[[^\]]+\]/g, '')
+                .replace(/https?:\/\/[^\s]+/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        };
+        const descEn = manga.attributes.description.en || '';
+        const descId = manga.attributes.description.id || '';
+        document.getElementById('mangaDescriptionEn').textContent = cleanDescription(descEn);
+        document.getElementById('mangaDescriptionId').textContent = cleanDescription(descId);
 
-        // Set stats (using placeholder data as MangaDex API doesn't provide these)
-        document.getElementById('mangaRating').textContent = (Math.random() * 2 + 3).toFixed(1);
-        document.getElementById('mangaFollows').textContent = Math.floor(Math.random() * 10000);
-        document.getElementById('mangaComments').textContent = Math.floor(Math.random() * 100);
+        // Set rating from manga statistics
+        document.getElementById('mangaRating').textContent = manga.attributes.rating?.average?.toFixed(1) || '0.0';
+
+        // Language toggle functionality
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const lang = btn.dataset.lang;
+                document.getElementById('mangaDescriptionEn').style.display = lang === 'en' ? 'block' : 'none';
+                document.getElementById('mangaDescriptionId').style.display = lang === 'id' ? 'block' : 'none';
+            });
+        });
 
         // Display chapters
         displayChapters(chapters);

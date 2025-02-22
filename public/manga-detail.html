@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manga Detail</title>
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/manga-detail.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -14,7 +13,7 @@
             <button class="back-button">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <img src="" alt="Manga Banner" id="mangaBanner">
+            
         </div>
         
         <div class="manga-detail-content">
@@ -46,11 +45,16 @@
                 
                 <div class="info-stats">
                     <span class="stat"><i class="fas fa-star"></i> <span id="mangaRating">0.0</span></span>
-                    <span class="stat"><i class="fas fa-bookmark"></i> <span id="mangaFollows">0</span></span>
-                    <span class="stat"><i class="fas fa-comment"></i> <span id="mangaComments">0</span></span>
                 </div>
                 
-                <div class="info-description" id="mangaDescription"></div>
+                <div class="description-container">
+                    <div class="language-toggle">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="id">ID</button>
+                    </div>
+                    <div class="info-description" id="mangaDescriptionEn"></div>
+                    <div class="info-description" id="mangaDescriptionId" style="display: none;"></div>
+                </div>
             </div>
     
             <div class="chapter-list">

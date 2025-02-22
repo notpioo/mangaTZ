@@ -1,9 +1,23 @@
+/* Common CSS Variables */
+:root {
+    --primary-color: #FF9F67;  /* Pastel Orange */
+    --secondary-color: #FFB088; /* Lighter Pastel Orange */
+    --accent-color: #FF7F50;   /* Coral Orange */
+    --text-primary: #2c3e50;
+    --text-secondary: #596275;
+    --bg-color: #faf9f8;
+    --sidebar-width: 280px;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Container and Layout */
 .manga-detail-container {
     min-height: 100vh;
     background: var(--bg-color);
     position: relative;
 }
 
+/* Banner Styles */
 .manga-banner {
     width: 100%;
     max-width: 800px;
@@ -24,6 +38,7 @@
     font-size: 0;
 }
 
+/* Back Button */
 .back-button {
     position: fixed;
     top: 20px;
@@ -47,6 +62,7 @@
     transform: scale(1.1);
 }
 
+/* Content Layout */
 .manga-detail-content {
     max-width: 800px;
     margin: -20px auto 0;
@@ -63,11 +79,12 @@
     margin-bottom: 2rem;
 }
 
+/* Manga Header */
 .manga-header {
     display: flex;
-    gap: 2rem;
-    margin-top: -80px;
-    margin-bottom: 1rem;
+    gap: 1.5rem;
+    margin-top: -60px;
+    margin-bottom: 0.5rem;
 }
 
 .manga-cover-wrapper {
@@ -89,6 +106,7 @@
     transform: scale(1.05);
 }
 
+/* Title Section */
 .manga-title-section {
     flex-grow: 1;
     padding-top: 60px;
@@ -107,6 +125,7 @@
     font-weight: normal;
 }
 
+/* Action Buttons */
 .manga-actions {
     display: flex;
     gap: 10px;
@@ -153,6 +172,7 @@
     transform: scale(1.1);
 }
 
+/* Tags and Stats */
 .info-tags {
     display: flex;
     flex-wrap: wrap;
@@ -184,14 +204,6 @@
     border-bottom: 1px solid var(--bg-color);
 }
 
-.info-description {
-    line-height: 1.8;
-    color: var(--text-primary);
-    font-size: 1.05em;
-    text-align: justify;
-    margin-top: 1rem;
-}
-
 .stat {
     display: flex;
     align-items: center;
@@ -200,6 +212,16 @@
     font-size: 1.1em;
 }
 
+/* Description */
+.info-description {
+    line-height: 1.8;
+    color: var(--text-primary);
+    font-size: 1.05em;
+    text-align: justify;
+    margin-top: 1rem;
+}
+
+/* Chapter List */
 .chapter-list {
     background: white;
     border-radius: 16px;
@@ -263,6 +285,38 @@
     font-size: 0.95em;
 }
 
+/* Language Toggle - New Feature */
+.language-toggle {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn {
+    padding: 0.3rem 1rem;
+    border: 1px solid var(--primary-color);
+    background: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.lang-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Manga Grid - New Feature */
+.manga-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .manga-banner {
         height: 180px;
@@ -332,5 +386,12 @@
     .action-button {
         padding: 0.6rem 1.2rem;
         font-size: 0.9rem;
+    }
+
+    .back-button {
+        top: 15px;
+        left: 15px;
+        width: 35px;
+        height: 35px;
     }
 }
