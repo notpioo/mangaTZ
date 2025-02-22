@@ -45,6 +45,7 @@
                 
                 <div class="info-stats">
                     <span class="stat"><i class="fas fa-star"></i> <span id="mangaRating">0.0</span></span>
+                    <span class="stat"><i class="fas fa-circle-info"></i> <span id="mangaStatus">Unknown</span></span>
                 </div>
                 
                 <div class="description-container">
@@ -57,9 +58,41 @@
                 </div>
             </div>
     
-            <div class="chapter-list">
-                <h3>Chapters</h3>
-                <div class="chapters-container"></div>
+            <div class="manga-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="chapters">Chapters</button>
+                    <button class="tab-btn" data-tab="comments">Comments</button>
+                </div>
+
+                <div class="tab-content" id="chaptersTab">
+                    <div class="chapter-list">
+                        <div class="chapter-header">
+                            <div class="chapter-controls">
+                                <div class="chapter-search">
+                                    <input type="text" id="chapterSearch" placeholder="Search chapter...">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="chapter-sort">
+                                    <select id="chapterSort">
+                                        <option value="newest">Newest First</option>
+                                        <option value="oldest">Oldest First</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chapters-container"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="commentsTab" style="display: none;">
+                    <div class="comments-section">
+                        <div class="comment-form">
+                            <textarea id="commentInput" placeholder="Write your comment..."></textarea>
+                            <button id="submitComment">Post Comment</button>
+                        </div>
+                        <div class="comments-container"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
