@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Reader</title>
+    <link rel="stylesheet" href="/css/manga-reader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="reader-container">
+        <div class="reader-header">
+            <button class="back-button">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h1 id="chapter-title">Chapter</h1>
+            <div class="chapter-navigation">
+                <button id="prevChapter" class="nav-button"><i class="fas fa-chevron-left"></i> Prev</button>
+                <select id="chapterSelect"></select>
+                <button id="nextChapter" class="nav-button">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        <div class="image-container" id="imageContainer">
+            <!-- Images will be loaded here -->
+        </div>
+    </div>
+    <script src="/js/manga-reader.js"></script>
+</body>
+</html>

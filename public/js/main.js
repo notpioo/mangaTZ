@@ -129,120 +129,85 @@ if (searchBtnSearch && searchBtnCancel) {
     });
 }
 
-// Manga cover fetching
-async function fetchMangaCovers(manga) {
-    if (!manga.relationships) return '/images/no-image.png';
-
-    const coverRelationship = manga.relationships.find(rel => rel.type === 'cover_art');
-    if (!coverRelationship || !coverRelationship.attributes?.fileName) return '/images/no-image.png';
-
-    try {
-        const coverResponse = await fetch(`https://api.mangadex.org/cover/${coverRelationship.id}`);
-        const coverData = await coverResponse.json();
-
-        if (coverData.data?.attributes?.fileName) {
-            return `https://uploads.mangadex.org/covers/${manga.id}/${coverData.data.attributes.fileName}.256.jpg`;
-        }
-    } catch (error) {
-        console.error('Error fetching cover:', error);
+// Loading state function
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+        `;
     }
-
-    return `/api/manga/cover/${manga.id}/${coverRelationship.attributes.fileName}`;
 }
 
-// Display manga in container
-async function displayManga(mangaList, containerId) {
+function showError(containerId, message) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+}
+
+//Improved displayManga function to handle more precise rating
+function displayManga(mangaList, containerId) {
     if (!mangaList || mangaList.length === 0) return;
 
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // Create slider structure
     container.innerHTML = `
-        <div class="manga-slider">
-            <button class="slider-button prev">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="manga-slider-container">
-                <div class="manga-grid">
-                </div>
-            </div>
-            <button class="slider-button next">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+        <div class="manga-grid">
+            ${mangaList.map(manga => {
+                const title = manga.attributes.title.en || manga.attributes.title['ja-ro'] || Object.values(manga.attributes.title)[0];
+                const coverArt = manga.relationships.find(rel => rel.type === 'cover_art');
+                const coverFile = coverArt?.attributes?.fileName;
+                const rating = manga.attributes.rating?.average || 0;
+
+                return `
+                    <div class="manga-card" onclick="window.location.href='/manga-detail.html?id=${manga.id}'">
+                        <div class="manga-cover-wrapper">
+                            <img 
+                                class="manga-cover" 
+                                src="${coverFile ? `/api/manga/cover/${manga.id}/${coverFile}` : '/images/no-image.png'}"
+                                alt="${title}"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div class="manga-info">
+                            <h3 class="manga-title">${title}</h3>
+                            <div class="manga-details">
+                                <span class="manga-rating">
+                                    <i class="fas fa-star"></i> ${rating.toFixed(2)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
         </div>
     `;
-
-    const mangaGrid = container.querySelector('.manga-grid');
-    const placeholderImage = '/images/no-image.png';
-
-    for (const manga of mangaList) {
-        try {
-            const card = document.createElement('div');
-            card.className = 'manga-card';
-
-            // Get manga title
-            let title = 'Unknown Title';
-            if (manga.attributes?.title) {
-                title = manga.attributes.title.en || 
-                       manga.attributes.title.ja || 
-                       manga.attributes.title['ja-ro'] ||
-                       Object.values(manga.attributes.title)[0] ||
-                       'Unknown Title';
-            }
-
-            // Get cover URL menggunakan route proxy baru
-            let coverUrl = placeholderImage;
-            if (manga.relationships) {
-                const coverArt = manga.relationships.find(rel => rel.type === 'cover_art');
-                if (coverArt && coverArt.attributes && coverArt.attributes.fileName) {
-                    coverUrl = `/api/manga/cover/${manga.id}/${coverArt.attributes.fileName}`;
-                }
-            }
-
-            card.innerHTML = `
-                <div class="manga-cover-wrapper">
-                    <img 
-                        src="${coverUrl}" 
-                        alt="${title}" 
-                        class="manga-cover"
-                        onerror="this.src='${placeholderImage}'"
-                        loading="lazy">
-                </div>
-                <div class="manga-info">
-                    <h3 class="manga-title">${title}</h3>
-                    <div class="manga-details">
-                        <span class="manga-rating">
-                            <i class="fas fa-star"></i> ${(Math.random() * 2 + 3).toFixed(1)}
-                        </span>
-                    </div>
-                </div>
-            `;
-
-            card.addEventListener('click', () => {
-                window.location.href = `/manga-detail.html?id=${manga.id}`;
-            });
-
-            mangaGrid.appendChild(card);
-        } catch (error) {
-            console.error('Error creating manga card:', error);
-        }
-    }
-
-    // Initialize slider functionality
-    initSlider(containerId);
 }
+
 
 // Fetch and display popular manga
 async function fetchPopularManga() {
+    showLoading('popular-manga');
     try {
         const response = await fetch('/api/manga/popular');
-        const data = await response.json();
-        if (data.data) {
-            await displayManga(data.data, 'popular-manga');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        await displayManga(data.data, 'popular-manga');
     } catch (error) {
         console.error('Error fetching popular manga:', error);
+        showError('popular-manga', `Failed to load popular manga. ${error.message}`);
     }
 }
 
@@ -262,46 +227,50 @@ async function fetchLatestManga() {
     }
 }
 
-// Loading state function (unchanged)
-function showLoading(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        const loadingGrid = document.createElement('div');
-        loadingGrid.className = 'manga-grid';
-
-        for (let i = 0; i < 12; i++) {
-            const loadingCard = document.createElement('div');
-            loadingCard.className = 'manga-card';
-            loadingCard.innerHTML = `
-                <div class="manga-cover-wrapper loading"></div>
-                <div class="manga-info">
-                    <div class="manga-title loading" style="height: 1rem; margin-bottom: 0.5rem;"></div>
-                    <div class="manga-details">
-                        <div class="loading" style="height: 1rem; width: 50%;"></div>
-                    </div>
-                </div>
-            `;
-            loadingGrid.appendChild(loadingCard);
+// Fetch and display top rated manga
+async function fetchTopRatedManga() {
+    showLoading('top-rated-manga');
+    try {
+        const response = await fetch('/api/manga/top-rated');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        container.innerHTML = '';
-        container.appendChild(loadingGrid);
+        const data = await response.json();
+        await displayManga(data.data, 'top-rated-manga');
+    } catch (error) {
+        console.error('Error fetching top rated manga:', error);
+        showError('top-rated-manga', `Failed to load top rated manga. ${error.message}`);
     }
 }
 
-// Error display function (unchanged)
-function showError(containerId, message) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                ${message}
-            </div>
-        `;
+// Fetch and display staff picks manga - replacing most viewed
+async function fetchStaffPicksManga() {
+    showLoading('staff-picks-manga');
+    try {
+        const response = await fetch('/api/manga/staff-picks');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        await displayManga(data.data, 'staff-picks-manga');
+    } catch (error) {
+        console.error('Error fetching staff picks manga:', error);
+        showError('staff-picks-manga', `Failed to load staff picks manga. ${error.message}`);
     }
 }
 
+// Fetch and display recently added manga
+
+
+
+// Initialize all manga sections
+document.addEventListener('DOMContentLoaded', async () => {
+    fetchPopularManga();
+    fetchLatestManga();
+    fetchTopRatedManga();
+    fetchStaffPicksManga(); // Replace most viewed
+    fetchRecentlyAddedManga();
+});
 
 // Tambahkan fungsi untuk preload placeholder image
 function preloadPlaceholder() {
@@ -315,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchPopularManga().catch(err => console.error('Error in popular manga:', err));
     fetchLatestManga().catch(err => console.error('Error in latest manga:', err));
 });
-
 
 // Slider initialization function
 function initSlider(containerId) {

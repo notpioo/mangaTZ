@@ -81,12 +81,18 @@ function displayChapters(chapters) {
             <span class="chapter-number">Chapter ${chapterNumber}</span>
             <span class="chapter-title">${chapterTitle}</span>
         `;
+        chapterElement.addEventListener('click', () => {
+            window.location.href = `/manga-reader.html?mangaId=${currentMangaId}&chapterId=${chapter.id}`;
+        });
         container.appendChild(chapterElement);
     });
 }
 
+let currentMangaId = '';
+
 async function loadMangaDetails(mangaId) {
     try {
+        currentMangaId = mangaId;
         const response = await fetch(`/api/manga/${mangaId}`);
         const data = await response.json();
 
